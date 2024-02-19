@@ -1,11 +1,7 @@
 import { fetchImages } from "./js/pixabay-api";
-// Описаний у документації
 import iziToast from "izitoast";
-// Додатковий імпорт стилів
 import "izitoast/dist/css/iziToast.min.css";
-// Описаний у документації
 import SimpleLightbox from "simplelightbox";
-// Додатковий імпорт стилів
 import "simplelightbox/dist/simple-lightbox.min.css";
 import { renderImgs } from "./js/render-functions";
 
@@ -14,35 +10,30 @@ export const gallery = document.querySelector('.gallery');
 const userInput = document.querySelector('input');
 const containerDiv = document.querySelector('.container');
 const loadButton = document.querySelector('.btn-load')
-// const pixabayAPI = new PixabayAPI();
 const showLoader = () => {
     const loader = document.createElement('span');
     loader.classList.add('loader');
     containerDiv.append(loader);
   };
-
 const removeLoader = () => {
     const loader = document.querySelector('.loader');
     if (loader) {
         loader.remove();
     }
-};
+    };
 const showLoadBtn = () =>{
     loadButton.classList.remove("hidden");
-    
-};
+    };
 const removeLoadBtn = () =>{
     loadButton.classList.add("hidden");
-    console.log(page <= maxPage);
-};
+    };
 const checkBtnVisible = () =>{
     if(page >= maxPage){
         removeLoadBtn();
     }else{
         showLoadBtn();
-
-    }
-}
+        };
+    };
 let query;
 let page;
 let maxPage;
@@ -104,19 +95,18 @@ async function loadMore(e){
         behavior: 'smooth',
         top: 2*heights,
       });
-      console.log(data.hits.length);
     if(page >= maxPage || !data.hits.length){
         iziToast.info({
             title: '',
             message: "We're sorry, but you've reached the end of search results.",
-        });
+            });
         removeLoadBtn();
-    }
-}
+        };
+    };
 
 function showError(msg) {
     iziToast.error({
         title: 'Error',
         message: msg,
-    });
-    }
+        });
+    };
