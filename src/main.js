@@ -41,6 +41,7 @@ const checkBtnVisible = () =>{
         removeLoadBtn();
     }else{
         showLoadBtn();
+        
     }
 }
 let query;
