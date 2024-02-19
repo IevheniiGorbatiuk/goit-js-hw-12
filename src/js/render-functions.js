@@ -9,9 +9,9 @@ function templateImg({webformatURL, largeImageURL, tags, likes, views, comments,
     </li>`;
 };
 function templateImgs(imgs){
-    return imgs.hits.map(templateImg).join('');
+    return imgs.map(templateImg).join('');
 };
 export function renderImgs(imgs){
     const markup = templateImgs(imgs);
-    gallery.innerHTML = markup;
+    gallery.insertAdjacentHTML("beforeend", markup);
 }

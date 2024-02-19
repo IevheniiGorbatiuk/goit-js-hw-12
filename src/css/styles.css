@@ -12,7 +12,10 @@ input {
 li {
   list-style-type: none;
 }
-
+.hidden {
+  display: none;
+  opacity: 0;
+}
 .container {
   display: flex;
   flex-direction: column;

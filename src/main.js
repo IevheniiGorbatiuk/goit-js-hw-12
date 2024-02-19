@@ -1,4 +1,4 @@
-import { PixabayAPI } from "./js/pixabay-api";
+import { fetchImages } from "./js/pixabay-api";
 // Описаний у документації
 import iziToast from "izitoast";
 // Додатковий імпорт стилів
@@ -13,12 +13,39 @@ const form = document.querySelector('.form');
 export const gallery = document.querySelector('.gallery');
 const userInput = document.querySelector('input');
 const containerDiv = document.querySelector('.container');
-const pixabayAPI = new PixabayAPI();
+const loadButton = document.querySelector('.btn-load')
+// const pixabayAPI = new PixabayAPI();
 const showLoader = () => {
     const loader = document.createElement('span');
     loader.classList.add('loader');
     containerDiv.append(loader);
   };
+
+const removeLoader = () => {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        loader.remove();
+    }
+};
+const showLoadBtn = () =>{
+    loadButton.classList.remove("hidden");
+    console.log(page >= maxPage);
+};
+const removeLoadBtn = () =>{
+    loadButton.classList.add("hidden");
+    console.log("removeLoadBtn");
+    console.log(page,maxPage);
+};
+const checkBtnVisible = () =>{
+    if(page >= maxPage){
+        removeLoadBtn();
+    }else{
+        showLoadBtn();
+    }
+}
+let query;
+let page;
+let maxPage;
 
 const options = {
     captions: true,
@@ -29,43 +56,54 @@ const options = {
     animation: 250,
 };
 
-const removeLoader = () => {
-    const loader = document.querySelector('.loader');
-    if (loader) {
-        loader.remove();
-    }
-  };
+form.addEventListener("submit", onFormSubmit);
+loadButton.addEventListener("click", loadMore);
 
-form.addEventListener("submit", e =>{
-    showLoader();
+async function onFormSubmit(e){
     e.preventDefault();
-    const query = userInput.value;
+    query = userInput.value.trim();
+    page = 1;
 
-    pixabayAPI
-    .getImages(query)
-    .then(data => {
-        if (data.hits.length === 0) {
-          iziToast.error({
-            title: '',
-            backgroundColor: '#EF4040',
-            message:
-              'Sorry, there are no images matching your search query. Please try again!',
-          });
-          gallery.innerHTML ="";
-          form.reset();
-        } else {
-            renderImgs(data);
-            const lightbox = new SimpleLightbox('.gallery a', options);
-            lightbox.on('show.sipmlelightbox');
-            lightbox.refresh();
-            form.reset();
-            }
-        })
-    .catch(error => {
-        console.log(error);
-    })
-    .finally(() =>{
-        removeLoader();
+    if(!query){
+        showError('Empty field!');
+        return;
+    }
+    showLoader();
+
+    try{
+    const data = await fetchImages(query,page);
+    if(data.totalHits === 0){
+        showError("Sorry, there are no images matching your search query. Please try again!")
+    };
+    maxPage = Math.ceil(data.totalHits / 15);
+    gallery.innerHTML = "";
+    renderImgs(data.hits);
+    const lightbox = new SimpleLightbox('.gallery a', options);
+    lightbox.on('show.sipmlelightbox');
+    lightbox.refresh();
     
+    }
+    catch(err){
+        showError(err);
+    }
+    removeLoader();
+    checkBtnVisible();
+    form.reset();
+};
+async function loadMore(e){
+    page += 1;
+    const data = await fetchImages(query,page);
+    renderImgs(data.hits);
+    const lightbox = new SimpleLightbox('.gallery a', options);
+    lightbox.on('show.sipmlelightbox');
+    lightbox.refresh();
+    removeLoader();
+    checkBtnVisible();
+}
+
+function showError(msg) {
+    iziToast.error({
+        title: 'Error',
+        message: msg,
     });
-});
+    }
