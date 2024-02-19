@@ -104,6 +104,7 @@ async function loadMore(e){
         behavior: 'smooth',
         top: 2*heights,
       });
+      console.log(data.hits.length);
     if(page >= maxPage || !data.hits.length){
         iziToast.info({
             title: '',
