@@ -29,12 +29,10 @@ const removeLoader = () => {
 };
 const showLoadBtn = () =>{
     loadButton.classList.remove("hidden");
-    console.log(page <= maxPage);
-    console.log("showLoadBtn");
+    
 };
 const removeLoadBtn = () =>{
     loadButton.classList.add("hidden");
-    console.log("removeLoadBtn");
     console.log(page <= maxPage);
 };
 const checkBtnVisible = () =>{
@@ -106,11 +104,12 @@ async function loadMore(e){
         behavior: 'smooth',
         top: 2*heights,
       });
-    if(page >= maxPage){
+    if(page >= maxPage || !data.hits){
         iziToast.info({
             title: '',
             message: "We're sorry, but you've reached the end of search results.",
-    })
+        });
+        removeLoadBtn();
     }
 }
 
