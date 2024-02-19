@@ -104,7 +104,7 @@ async function loadMore(e){
         behavior: 'smooth',
         top: 2*heights,
       });
-    if(page >= maxPage || !data.hits){
+    if(page >= maxPage || !data.hits.length){
         iziToast.info({
             title: '',
             message: "We're sorry, but you've reached the end of search results.",
